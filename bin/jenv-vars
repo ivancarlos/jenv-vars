@@ -31,8 +31,8 @@ find-jenv-vars-files() {
   local results=""
 
   while [ -n "$root" ]; do
-    if [ -e "${root}/.jenv-vars" ]; then
-      results="${root}/.jenv-vars"$'\n'"$results"
+    if [ -e "${root}/.vars" ]; then
+      results="${root}/.vars"$'\n'"$results"
     fi
     root="${root%/*}"
   done
