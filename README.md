@@ -21,12 +21,17 @@ No arquivo .vars definimos nossas variáveis
 ```
 DEBUG=1
 S3_BUCKET=mybucket
+KIKO={S3_BUCKET}/bin:{PATH}
 ```
 
 Ver as variáveis definidas
 
 ```
-jenv vars
+$ jenv vars
+
+export DEBUG=1
+export S3_BUCKET=mybucket
+export KIKO=$S3_BUCKET/bin:$PATH
 ```
 
 Para carregar as variáveis basta usar o seguinte comando entre
