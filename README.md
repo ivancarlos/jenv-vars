@@ -16,7 +16,28 @@ that supports plugin bundles.)
 
 ## Usage
 
-Define environment variables in an `.jenv-vars` file in your project,
+No arquivo .vars definimos nossas variáveis
+
+```
+DEBUG=1
+S3_BUCKET=mybucket
+```
+
+Ver as variáveis definidas
+
+```
+jenv vars
+```
+
+Para carregar as variáveis basta usar o seguinte comando entre
+aspas.
+
+```
+eval "$(jenv vars)"
+```
+
+
+    Define environment variables in an `.jenv-vars` file in your project,
 one variable per line, in the format `VAR=value`. For example:
 
     DEBUG=1
