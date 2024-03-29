@@ -14,47 +14,50 @@ set -e
 [ -n "$jenv_DEBUG" ] && set -x
 
 if [ -z "$jenv_DIR" ]; then
-  export jenv_DIR="$(pwd)"
+	export jenv_DIR="$(pwd)"
 fi
 
 if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
-  echo "jenv-vars 1.2.0"
-  exit
+	echo "jenv-vars 1.2.0"
+	exit
 fi
 
 find-jenv-vars-files() {
-  if [ -e "${jenv_ROOT}/vars" ]; then
-    echo "${jenv_ROOT}/vars"
-  fi
+	if [ -e "${jenv_ROOT}/vars" ]; then
+		echo "${jenv_ROOT}/vars"
+	fi
 
-  local root="$jenv_DIR"
-  local results=""
+	local root="$jenv_DIR"
+	local results=""
 
-  while [ -n "$root" ]; do
-    if [ -e "${root}/.vars" ]; then
-      results="${root}/.vars"$'\n'"$results"
-    fi
-    root="${root%/*}"
-  done
+	while [ -n "$root" ]; do
+		if [ -e "${root}/.vars" ]; then
+			results="${root}/.vars"$'\n'"$results"
+		fi
+		root="${root%/*}"
+	done
 
-  echo -n "$results"
+	echo -n "$results"
 }
 
 sanitize-vars() {
-  sed \
-    -e "/^[ "$'\t'"]*[A-Za-z_][0-9A-Za-z_]*?\{0,1\}=/ !d" \
-    -e "s/'/'\\\\''/g" \
-    -e "s/\(\\\\\\\$\)/'\\1'/g" \
-    -e "s/\\\\\\\\/\\\\/g" \
-    -e "s/\(\\\$[0-9A-Za-z_][0-9A-Za-z_]*\)/'\\1'/g" \
-    -e "s/\(\\\${[0-9A-Za-z_][0-9A-Za-z_]*}\)/'\\1'/g" \
-    -e "s/^[ "$'\t'"]*\([A-Za-z_][0-9A-Za-z_]*?\{0,1\}\)=\(.*\)$/export \\1=\\2/" \
-    -e "s/export \([A-Za-z_][0-9A-Za-z_]*\)?=/[ -n \"\$\\1\" ] || export \\1=/g" \
-    -e 's/{\([^{}]\+\)}/$\1/g'
+	sed \
+		-e "/^[ "$'\t'"]*[A-Za-z_][0-9A-Za-z_]*?\{0,1\}=/ !d" \
+		-e "s/'/'\\\\''/g" \
+		-e "s/\(\\\\\\\$\)/'\\1'/g" \
+		-e "s/\\\\\\\\/\\\\/g" \
+		-e "s/\(\\\$[0-9A-Za-z_][0-9A-Za-z_]*\)/\"\\1\"/g" \
+		-e "s/\(\\\${[0-9A-Za-z_][0-9A-Za-z_]*}\)/\"\\1\"/g" \
+		-e "s/^[ "$'\t'"]*\([A-Za-z_][0-9A-Za-z_]*?\{0,1\}\)=\(.*\)$/export \\1=\\2/" \
+		-e "s/export \([A-Za-z_][0-9A-Za-z_]*\)?=/[ -n \"\$\\1\" ] || export \\1=/g" \
+		-e 's/{\([^{}]\+\)}/$\1/g'
 }
 
 while read file; do
-  echo "# $file"
-  { cat "$file"; echo; } | sanitize-vars
-  echo
-done < <( find-jenv-vars-files )
+	echo "# $file"
+	{
+		cat "$file"
+		echo
+	} | sanitize-vars
+	echo
+done < <(find-jenv-vars-files)
